@@ -13,7 +13,7 @@ services:
     environment:
       MONGODB_URL: "mongodb://mongo-router:27018"
       MONGODB_DATABASE_NAME: "somedb"
-      REDIS_URL: "redis://redis:6379"
+      REDIS_URL: "redis://redis-1:6379"
     networks:
       - mongo-cluster
 
@@ -114,16 +114,77 @@ services:
     networks:
       - mongo-cluster
 
-  redis:
+  redis-1:
     image: "redis:latest"
-    container_name: redis
+    container_name: redis-1
     ports:
-      - "6379:6379"
+      - "6379"
     volumes:
-      - /volumes/redis:/data
+      - /volumes/redis-1:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
     networks:
       - mongo-cluster
 
+  redis-2:
+    image: "redis:latest"
+    container_name: redis-2
+    ports:
+      - "6379"
+    volumes:
+      - /volumes/redis-2:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+    networks:
+      - mongo-cluster
+
+  redis-3:
+    image: "redis:latest"
+    container_name: redis-3
+    ports:
+      - "6379"
+    volumes:
+      - /volumes/redis-3:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+    networks:
+      - mongo-cluster
+
+  redis-4:
+    image: "redis:latest"
+    container_name: redis-4
+    ports:
+      - "6379"
+    volumes:
+      - /volumes/redis-4:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+    networks:
+      - mongo-cluster
+
+  redis-5:
+    image: "redis:latest"
+    container_name: redis-5
+    ports:
+      - "6379"
+    volumes:
+      - /volumes/redis-5:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+    networks:
+      - mongo-cluster
+
+  redis-6:
+    image: "redis:latest"
+    container_name: redis-6
+    ports:
+      - "6379"
+    volumes:
+      - /volumes/redis-6:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+    networks:
+      - mongo-cluster
 networks:
   mongo-cluster:
     driver: bridge
