@@ -1,0 +1,117 @@
+name: mongo-sharding-repl
+
+services:
+
+  pymongo-api:
+    container_name: pymongo-api
+    build:
+      context: api_app
+      dockerfile: Dockerfile
+    image: kazhem/pymongo_api:1.0.0
+    ports:
+      - 8080:8080
+    environment:
+      MONGODB_URL: "mongodb://mongo-router:27018"
+      MONGODB_DATABASE_NAME: "somedb"
+    networks:
+      - mongo-cluster
+
+  mongo-config-server:
+    image: mongo:latest
+    container_name: mongo-config-server
+    command: mongod --configsvr --replSet mongo-config-server --bind_ip_all --port 27017
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./volumes/mongo-config-server:/data/db
+    networks:
+      - mongo-cluster
+
+
+  mongo-router:
+    image: mongo:latest
+    container_name: mongo-router
+    command: mongos --configdb mongo-config-server/mongo-config-server:27017 --bind_ip_all --port 27018
+    restart: always
+    ports:
+      - "27018:27018"
+    volumes:
+      - ./volumes/mongo-router:/data/db
+    networks:
+      - mongo-cluster
+
+  mongo-shard-1:
+    image: mongo:latest
+    container_name: mongo-shard-1
+    command: mongod --shardsvr --replSet mongo-shard-1 --bind_ip_all --port 27019
+    restart: always
+    ports:
+      - "27019:27019"
+    volumes:
+      - ./volumes/mongo-shard-1:/data/db
+    networks:
+      - mongo-cluster
+
+  mongo-shard-1-slave-1:
+    image: mongo:latest
+    container_name: mongo-shard-1-slave-1
+    command: mongod --shardsvr --replSet mongo-shard-1 --bind_ip_all --port 27020
+    restart: always
+    ports:
+      - "27020:27020"
+    volumes:
+      - ./volumes/mongo-shard-1-slave-1:/data/db
+    networks:
+      - mongo-cluster
+
+  mongo-shard-1-slave-2:
+    image: mongo:latest
+    container_name: mongo-shard-1-slave-2
+    command: mongod --shardsvr --replSet mongo-shard-1 --bind_ip_all --port 27021
+    restart: always
+    ports:
+      - "27021:27021"
+    volumes:
+      - ./volumes/mongo-shard-1-slave-2:/data/db
+    networks:
+      - mongo-cluster
+
+  mongo-shard-2:
+    image: mongo:latest
+    container_name: mongo-shard-2
+    command: mongod --shardsvr --replSet mongo-shard-2 --bind_ip_all --port 27022
+    restart: always
+    ports:
+      - "27022:27022"
+    volumes:
+      - ./volumes/mongo-shard-2:/data/db
+    networks:
+      - mongo-cluster
+
+  mongo-shard-2-slave-1:
+    image: mongo:latest
+    container_name: mongo-shard-2-slave-1
+    command: mongod --shardsvr --replSet mongo-shard-2 --bind_ip_all --port 27023
+    restart: always
+    ports:
+      - "27023:27023"
+    volumes:
+      - ./volumes/mongo-shard-2-slave-1:/data/db
+    networks:
+      - mongo-cluster
+
+  mongo-shard-2-slave-2:
+    image: mongo:latest
+    container_name: mongo-shard-2-slave-2
+    command: mongod --shardsvr --replSet mongo-shard-2 --bind_ip_all --port 27024
+    restart: always
+    ports:
+      - "27024:27024"
+    volumes:
+      - ./volumes/mongo-shard-2-slave-2:/data/db
+    networks:
+      - mongo-cluster
+networks:
+  mongo-cluster:
+    driver: bridge
