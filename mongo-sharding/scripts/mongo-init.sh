@@ -88,7 +88,7 @@ EOF
 # Проверяем документы на MongoDB Shard 2
 ###
 
-docker compose exec -T mongo-shard-1 mongosh --port 27020 --quiet <<EOF
+docker compose exec -T mongo-shard-2 mongosh --port 27020 --quiet <<EOF
 
 use somedb;
 db.helloDoc.countDocuments();
